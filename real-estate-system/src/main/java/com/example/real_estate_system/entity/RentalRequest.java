@@ -38,6 +38,7 @@ public class RentalRequest {
     public void setMessage(String message) {
         this.message = message;
     }
+    public String getMessage() { return message; }
     
 
     public Long getId() {
@@ -79,5 +80,6 @@ public class RentalRequest {
     public void setStatus(RentalRequestStatus status) {
         this.status = status;
     }
-    
+
+
 }
