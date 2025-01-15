@@ -1,6 +1,5 @@
 package com.example.real_estate_system.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -24,10 +23,6 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Role> roles = new ArrayList<>();
-
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
@@ -98,8 +93,4 @@ public class User {
     public void setProperties(List<Property> properties) {
         this.properties = properties;
     }
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-    
 }

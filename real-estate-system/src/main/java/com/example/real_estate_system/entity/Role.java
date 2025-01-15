@@ -1,17 +1,20 @@
 package com.example.real_estate_system.entity;
 
 import jakarta.persistence.*;
-import java.util.Set;
-
+import org.springframework.security.core.GrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
     generator = ObjectIdGenerators.PropertyGenerator.class,
     property = "id"
 )
-public class Role {
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,15 @@ public class Role {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> users; // Οι χρήστες που έχουν αυτόν τον ρόλο
+
+    @Override
+    public String getAuthority() {
+        return name; // Επιστρέφει το όνομα του ρόλου ως GrantedAuthority
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(this); // Επιστρέφει τον ίδιο τον ρόλο ως GrantedAuthority
+    }
 
     // Getters and Setters
     public Long getId() {
