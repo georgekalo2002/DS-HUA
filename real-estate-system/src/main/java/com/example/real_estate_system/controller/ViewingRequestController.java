@@ -27,9 +27,15 @@ public class ViewingRequestController {
     }
 
     @PostMapping
-    public ViewingRequest createViewingRequest(@RequestBody ViewingRequest viewingRequest) {
-        return viewingRequestRepository.save(viewingRequest);
+public ViewingRequest createViewingRequest(@RequestBody ViewingRequest viewingRequest) {
+    System.out.println("Received ViewingRequest: " + viewingRequest);
+    if (viewingRequest.getProperty() == null) {
+        throw new RuntimeException("Property is null");
     }
+    return viewingRequestRepository.save(viewingRequest);
+}
+
+
 
     @PutMapping("/{id}")
     public ViewingRequest updateViewingRequest(@PathVariable Long id, @RequestBody ViewingRequest requestDetails) {

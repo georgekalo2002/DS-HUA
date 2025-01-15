@@ -4,7 +4,6 @@ import com.example.real_estate_system.entity.*;
 import com.example.real_estate_system.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 
 
@@ -93,13 +92,15 @@ public class DataLoader implements CommandLineRunner {
 
             // Δημιουργία αιτήσεων προβολής
             ViewingRequest viewingRequest = new ViewingRequest();
-            viewingRequest.setUser(tenant);
-            viewingRequest.setProperty(property2);
-            viewingRequest.setRequestedDateTime(LocalDateTime.now());
-            viewingRequest.setMessage("I would like to schedule a viewing.");
-            viewingRequestRepository.save(viewingRequest);
+            viewingRequest.setTenant(tenant); // Ορίζουμε το tenant, ώστε να μην είναι null
+            viewingRequest.setUser(tenant); // Εάν το user αναφέρεται στον tenant
+            viewingRequest.setProperty(property2); // Ορίζουμε το ακίνητο
+            viewingRequest.setRequestedDateTime(LocalDateTime.now()); // Ορίζουμε την ημερομηνία/ώρα
+            viewingRequest.setStatus("PENDING"); // Κατάσταση αιτήματος
+            viewingRequest.setMessage("I would like to schedule a viewing."); // Προσθέτουμε το μήνυμα
+            viewingRequestRepository.save(viewingRequest); // Αποθηκεύουμε το ViewingRequest
 
-            System.out.println("Δεδομένα αποθη  κεύτηκαν επιτυχώς στη βάση δεδομένων!");
+            System.out.println("Δεδομένα αποθηκεύτηκαν επιτυχώς στη βάση δεδομένων!");
         } else {
             System.out.println("Τα δεδομένα υπάρχουν ήδη στη βάση δεδομένων!");
         }
