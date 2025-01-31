@@ -2,15 +2,18 @@ package com.example.real_estate_system;
 
 import com.example.real_estate_system.entity.Role;
 import com.example.real_estate_system.repository.RoleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
-import java.util.Optional;
+
 
 @Component
 public class DataInitializer {
 
     private final RoleRepository roleRepository;
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
     public DataInitializer(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
@@ -24,14 +27,13 @@ public class DataInitializer {
     }
 
     private void createRoleIfNotFound(String roleName) {
-        Optional<Role> roleOptional = roleRepository.findByName(roleName);
-        if (roleOptional.isEmpty()) {
+        if (!roleRepository.existsByName(roleName)) {
             Role role = new Role();
             role.setName(roleName);
             roleRepository.save(role);
-            System.out.println("Role created: " + roleName);
+            logger.info("Role created: {}", roleName);
         } else {
-            System.out.println("Role already exists: " + roleName);
+            logger.info("Role already exists: {}", roleName);
         }
     }
 }

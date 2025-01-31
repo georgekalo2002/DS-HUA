@@ -1,48 +1,28 @@
 package com.example.real_estate_system.controller;
+
 import com.example.real_estate_system.entity.RentalRequest;
 import com.example.real_estate_system.repository.RentalRequestRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-    @RestController
-    @RequestMapping("/rental-requests")
-    public class RentalRequestController {
 
-        private final RentalRequestRepository rentalRequestRepository;
+@Controller // Αντί για @RestController
+@RequestMapping("/rental-requests")
+public class RentalRequestController {
 
-        public RentalRequestController(RentalRequestRepository rentalRequestRepository) {
-            this.rentalRequestRepository = rentalRequestRepository;
-        }
+    private final RentalRequestRepository rentalRequestRepository;
 
-        @GetMapping
-        public List<RentalRequest> getAllRentalRequests() {
-            return rentalRequestRepository.findAll();
-        }
-
-        @GetMapping("/{id}")
-        public RentalRequest getRentalRequestById(@PathVariable Long id) {
-            return rentalRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("RentalRequest not found"));
-        }
-
-        @PostMapping
-        public RentalRequest createRentalRequest(@RequestBody RentalRequest rentalRequest) {
-            return rentalRequestRepository.save(rentalRequest);
-        }
-
-        @PutMapping("/{id}")
-        public RentalRequest updateRentalRequest(@PathVariable Long id, @RequestBody RentalRequest requestDetails) {
-            RentalRequest rentalRequest = rentalRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("RentalRequest not found"));
-            rentalRequest.setStatus(requestDetails.getStatus());
-            rentalRequest.setMessage(requestDetails.getMessage());
-            return rentalRequestRepository.save(rentalRequest);
-        }
-
-        @DeleteMapping("/{id}")
-        public void deleteRentalRequest(@PathVariable Long id) {
-            rentalRequestRepository.deleteById(id);
-        }
-
-
+    public RentalRequestController(RentalRequestRepository rentalRequestRepository) {
+        this.rentalRequestRepository = rentalRequestRepository;
     }
 
-
+    @GetMapping
+    public String getAllRentalRequests(Model model) {
+        List<RentalRequest> rentalRequests = rentalRequestRepository.findAll();
+        model.addAttribute("rentalRequests", rentalRequests);
+        return "rentalRequest"; // Θα φορτώσει το templates/rental_requests.html
+    }
+}

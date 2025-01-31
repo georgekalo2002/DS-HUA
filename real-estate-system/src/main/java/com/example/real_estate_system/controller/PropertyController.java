@@ -2,13 +2,16 @@ package com.example.real_estate_system.controller;
 
 import com.example.real_estate_system.entity.Property;
 import com.example.real_estate_system.repository.PropertyRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-@RestController
+
+@Controller  // Αντί για @RestController
 @RequestMapping("/properties")
 public class PropertyController {
-
 
     private final PropertyRepository propertyRepository;
 
@@ -17,39 +20,9 @@ public class PropertyController {
     }
 
     @GetMapping
-    public List<Property> getAllProperties() {
-        return propertyRepository.findAll();
+    public String getAllProperties(Model model) {
+        List<Property> properties = propertyRepository.findAll();
+        model.addAttribute("properties", properties);
+        return "property"; // Φορτώνει το templates/properties.html
     }
-
-    @GetMapping("/{id}")
-    public Property getPropertyById(@PathVariable Long id) {
-        return propertyRepository.findById(id).orElseThrow(() -> new RuntimeException("Property not found"));
-    }
-
-    @PostMapping
-    public Property createProperty(@RequestBody Property property) {
-        return propertyRepository.save(property);
-    }
-
-    @PutMapping("/{id}")
-    public Property updateProperty(@PathVariable Long id, @RequestBody Property propertyDetails) {
-        Property property = propertyRepository.findById(id).orElseThrow(() -> new RuntimeException("Property not found"));
-        property.setName(propertyDetails.getName());
-        property.setLocation(propertyDetails.getLocation());
-        property.setPrice(propertyDetails.getPrice());
-        property.setOwner(propertyDetails.getOwner());
-        return propertyRepository.save(property);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteProperty(@PathVariable Long id) {
-        propertyRepository.deleteById(id);
-    }
-
-  /*  @GetMapping("/search")
-    public List<Property> findPropertiesByLocation(@RequestParam String location) {
-        return propertyRepository.findByLocation(location);
-    }
-*/
 }
-

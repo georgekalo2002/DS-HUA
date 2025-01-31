@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Viewing Requests</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Viewing Requests</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Message</th>
+        </tr>
+        <tr th:each="viewingRequest : ${viewingRequests}">
+            <td th:text="${viewingRequest.id}"></td>
+            <td th:text="${viewingRequest.status}"></td>
+            <td th:text="${viewingRequest.message}"></td>
+        </tr>
+    </table>
+</body>
+</html>

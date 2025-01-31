@@ -16,9 +16,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Αν δε χρειάζεται CSRF
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/public/**").permitAll() // Επιτρεπτή πρόσβαση στις δημόσιες σελίδες
+                .requestMatchers("/admin/**").hasRole("ADMIN") // Πρόσβαση μόνο για ADMIN
+                .requestMatchers("/owner/**").hasRole("OWNER") // Πρόσβαση μόνο για OWNER
+                .requestMatchers("/tenant/**").hasRole("TENANT") // Πρόσβαση μόνο για TENANT
                 .anyRequest().authenticated() // Όλα τα άλλα endpoints απαιτούν αυθεντικοποίηση
             )
-            .formLogin(login -> login // Προεπιλεγμένη σελίδα σύνδεσης του Spring Security
+            .formLogin(login -> login
                 .permitAll()
             )
             .logout(logout -> logout

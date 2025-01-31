@@ -2,11 +2,14 @@ package com.example.real_estate_system.controller;
 
 import com.example.real_estate_system.entity.Role;
 import com.example.real_estate_system.repository.RoleRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@RestController
+@Controller // Αντί για @RestController
 @RequestMapping("/roles")
 public class RoleController {
 
@@ -17,25 +20,9 @@ public class RoleController {
     }
 
     @GetMapping
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    @PostMapping
-    public Role createRole(@RequestBody Role role) {
-        return roleRepository.save(role);
-    }
-
-    @PutMapping("/{id}")
-    public Role updateRole(@PathVariable Long id, @RequestBody Role roleDetails) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
-        role.setName(roleDetails.getName());
-        return roleRepository.save(role);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteRole(@PathVariable Long id) {
-        roleRepository.deleteById(id);
+    public String getAllRoles(Model model) {
+        List<Role> roles = roleRepository.findAll();
+        model.addAttribute("roles", roles);
+        return "role"; // Θα φορτώσει το templates/roles.html
     }
 }
-

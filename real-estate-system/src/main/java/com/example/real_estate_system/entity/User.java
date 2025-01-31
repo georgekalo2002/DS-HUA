@@ -1,17 +1,9 @@
 package com.example.real_estate_system.entity;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
-@JsonIdentityInfo(
-    generator = ObjectIdGenerators.PropertyGenerator.class,
-    property = "id"
-)
 public class User {
 
     @Id
@@ -29,68 +21,49 @@ public class User {
     private Role role; // Ο ρόλος του χρήστη
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ViewingRequest> viewingRequests; // Οι αιτήσεις προβολής
+    private Set<ViewingRequest> viewingRequests; // Οι αιτήσεις προβολής
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RentalRequest> rentalRequests; // Οι αιτήσεις ενοικίασης
+    private Set<RentalRequest> rentalRequests; // Οι αιτήσεις ενοικίασης
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Property> properties; // Τα ακίνητα του ιδιοκτήτη
+    private Set<Property> properties; // Τα ακίνητα του ιδιοκτήτη
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setPassword(String password) { this.password = password; }
 
-    public Role getRole() {
-        return role;
-    }
+    public Role getRole() { return role; }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public void setRole(Role role) { this.role = role; }
 
-    public List<ViewingRequest> getViewingRequests() {
-        return viewingRequests;
-    }
+    public Set<ViewingRequest> getViewingRequests() { return viewingRequests; }
 
-    public void setViewingRequests(List<ViewingRequest> viewingRequests) {
-        this.viewingRequests = viewingRequests;
-    }
+    public void setViewingRequests(Set<ViewingRequest> viewingRequests) { this.viewingRequests = viewingRequests; }
 
-    public List<RentalRequest> getRentalRequests() {
-        return rentalRequests;
-    }
+    public Set<RentalRequest> getRentalRequests() { return rentalRequests; }
 
-    public void setRentalRequests(List<RentalRequest> rentalRequests) {
-        this.rentalRequests = rentalRequests;
-    }
+    public void setRentalRequests(Set<RentalRequest> rentalRequests) { this.rentalRequests = rentalRequests; }
 
-    public List<Property> getProperties() {
-        return properties;
-    }
+    public Set<Property> getProperties() { return properties; }
 
-    public void setProperties(List<Property> properties) {
-        this.properties = properties;
+    public void setProperties(Set<Property> properties) { this.properties = properties; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", role=" + (role != null ? role.getName() : "null") +
+                '}';
     }
 }

@@ -2,11 +2,14 @@ package com.example.real_estate_system.controller;
 
 import com.example.real_estate_system.entity.ViewingRequest;
 import com.example.real_estate_system.repository.ViewingRequestRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@RestController
+@Controller // Αντί για @RestController
 @RequestMapping("/viewing-requests")
 public class ViewingRequestController {
 
@@ -17,47 +20,9 @@ public class ViewingRequestController {
     }
 
     @GetMapping
-    public List<ViewingRequest> getAllViewingRequests() {
-        return viewingRequestRepository.findAll();
+    public String getAllViewingRequests(Model model) {
+        List<ViewingRequest> viewingRequests = viewingRequestRepository.findAll();
+        model.addAttribute("viewingRequests", viewingRequests);
+        return "viewingRequest"; // Θα φορτώσει το templates/viewing_requests.html
     }
-
-    @GetMapping("/{id}")
-    public ViewingRequest getViewingRequestById(@PathVariable Long id) {
-        return viewingRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("ViewingRequest not found"));
-    }
-
-    @PostMapping
-public ViewingRequest createViewingRequest(@RequestBody ViewingRequest viewingRequest) {
-    System.out.println("Received ViewingRequest: " + viewingRequest);
-    if (viewingRequest.getProperty() == null) {
-        throw new RuntimeException("Property is null");
-    }
-    return viewingRequestRepository.save(viewingRequest);
 }
-
-
-
-    @PutMapping("/{id}")
-    public ViewingRequest updateViewingRequest(@PathVariable Long id, @RequestBody ViewingRequest requestDetails) {
-        ViewingRequest viewingRequest = viewingRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("ViewingRequest not found"));
-        viewingRequest.setStatus(requestDetails.getStatus());
-        viewingRequest.setMessage(requestDetails.getMessage());
-        return viewingRequestRepository.save(viewingRequest);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteViewingRequest(@PathVariable Long id) {
-        viewingRequestRepository.deleteById(id);
-    }
-
-    @PutMapping("/{id}/approve")
-    public ViewingRequest approveRequest(@PathVariable Long id) {
-        ViewingRequest request = viewingRequestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
-        request.setStatus("APPROVED");
-        return viewingRequestRepository.save(request);
-    }
-
-}
-
-
