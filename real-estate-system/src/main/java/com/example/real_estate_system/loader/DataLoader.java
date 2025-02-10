@@ -111,6 +111,6 @@ public class DataLoader implements CommandLineRunner {
         viewingRequest.setMessage("I would like to schedule a viewing.");
         viewingRequestRepository.save(viewingRequest);
 
-        System.out.println("✅ Δεδομένα αποθηκεύτηκαν επιτυχώς στη βάση δεδομένων!");
+        System.out.println("Δεδομένα αποθηκεύτηκαν επιτυχώς στη βάση δεδομένων!");
     }
 }
