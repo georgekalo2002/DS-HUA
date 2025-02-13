@@ -20,12 +20,12 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     public DataLoader(
-            UserRepository userRepository,
-            PropertyRepository propertyRepository,
-            RoleRepository roleRepository,
-            RentalRequestRepository rentalRequestRepository,
-            ViewingRequestRepository viewingRequestRepository,
-            PasswordEncoder passwordEncoder
+        UserRepository userRepository,
+        PropertyRepository propertyRepository,
+        RoleRepository roleRepository,
+        RentalRequestRepository rentalRequestRepository,
+        ViewingRequestRepository viewingRequestRepository,
+        PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
@@ -111,6 +111,6 @@ public class DataLoader implements CommandLineRunner {
         viewingRequest.setMessage("I would like to schedule a viewing.");
         viewingRequestRepository.save(viewingRequest);
 
-        System.out.println("✅ Δεδομένα αποθηκεύτηκαν επιτυχώς στη βάση δεδομένων!");
+        System.out.println("Δεδομένα αποθηκεύτηκαν επιτυχώς στη βάση δεδομένων!");
     }
 }
