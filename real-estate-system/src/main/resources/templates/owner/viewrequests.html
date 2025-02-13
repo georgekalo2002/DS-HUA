@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Αιτήσεις Προβολής</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>Αιτήσεις Προβολής</h1>
+
+  <table class="table table-bordered mt-3">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Όνομα Ενοικιαστή</th>
+      <th scope="col">Ημερομηνία</th>
+      <th scope="col">Περιοχή</th>
+      <th scope="col">Κατάσταση</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Επαναλαμβάνει τις αιτήσεις προβολής -->
+    <th:block th:each="viewingRequest : ${viewingRequests}">
+      <tr>
+        <td th:text="${viewingRequest.id}"></td>
+        <td th:text="${viewingRequest.tenantName}"></td>
+        <td th:text="${viewingRequest.date}"></td>
+        <td th:text="${viewingRequest.location}"></td>
+        <td th:text="${viewingRequest.status}"></td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+
+  <div class="mt-3">
+    <a href="/owner/dashboard" class="btn btn-secondary">Επιστροφή στο Πίνακα Ελέγχου</a>
+  </div>
+</div>
+
+<!-- Bootstrap JS για responsive στοιχεία -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

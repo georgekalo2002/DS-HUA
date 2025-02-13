@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Real Estate System</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"> </head>
+<body>
+
+<header>
+  <h1>Real Estate System</h1>
+  <nav>
+    <ul>
+      <li><a th:href="@{/}">Home</a></li>
+      <li sec:authorize="hasRole('ROLE_OWNER')"><a th:href="@{/properties}">My Properties</a></li>
+      <li sec:authorize="hasRole('ROLE_TENANT')"><a th:href="@{/properties}">View Properties</a></li>
+      <li sec:authorize="hasRole('ROLE_TENANT')"><a th:href="@{/viewing-request}">Submit Viewing Request</a></li>
+      <li sec:authorize="hasRole('ROLE_TENANT')"><a th:href="@{/rental-request}">Submit Rental Request</a></li>
+      <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
+      <li sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Login</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div th:replace="${template}"></div>  </main>
+
+<footer>
+  <p>&copy; 2025 Real Estate System</p>
+</footer>
+
+</body>
+</html>
