@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Viewing Requests</title>
+    <script>
+        // Διαγραφή Viewing Request
+        function deleteRequest(id) {
+            if (confirm("Σίγουρα θέλετε να διαγράψετε αυτή την αίτηση;")) {
+                fetch(`/api/viewing-requests/${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Η αίτηση διαγράφηκε!");
+                            location.reload();
+                        } else {
+                            response.text().then(text => alert("Σφάλμα: " + text));
+                        }
+                    })
+                    .catch(error => console.error("Σφάλμα:", error));
+            }
+        }
+
+        // Ενημέρωση κατάστασης Viewing Request
+        function updateStatus(id, status) {
+            fetch(`/api/viewing-requests/${id}`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: status }) // Σωστό JSON format
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Η κατάσταση ενημερώθηκε σε: " + status);
+                    location.reload();
+                } else {
+                    response.text().then(text => alert("Σφάλμα: " + text));
+                }
+            })
+            .catch(error => console.error("Σφάλμα:", error));
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: lightgray;
+        }
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+        }
+        .approve-btn {
+            background-color: green;
+            color: white;
+        }
+        .reject-btn {
+            background-color: orange;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Viewing Requests</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="viewingRequest : ${viewingRequests}">
+                <td th:text="${viewingRequest.id}"></td>
+                <td th:text="${viewingRequest.status}"></td>
+                <td th:text="${viewingRequest.message}"></td>
+                <td>
+                    <button class="delete-btn" th:onclick="'deleteRequest(' + ${viewingRequest.id} + ')'">Διαγραφή</button>
+                    <button class="approve-btn" th:onclick="'updateStatus(' + ${viewingRequest.id} + ', \'APPROVED\')'">Έγκριση</button>
+                    <button class="reject-btn" th:onclick="'updateStatus(' + ${viewingRequest.id} + ', \'REJECTED\')'">Απόρριψη</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

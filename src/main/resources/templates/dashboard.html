@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <script>
+        // 🔹 Αίτηση Προβολής
+        function requestViewing(propertyId) {
+            fetch('/api/viewing-requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ propertyId: propertyId, message: "Θέλω να προγραμματίσω προβολή" }),
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(() => alert("Η αίτηση προβολής στάλθηκε επιτυχώς!"))
+            .catch(error => console.error("Σφάλμα:", error));
+        }
+
+        // 🔹 Αίτηση Ενοικίασης
+        function requestRental(propertyId) {
+            fetch('/api/rental-requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ propertyId: propertyId, message: "Θέλω να ενοικιάσω αυτό το ακίνητο" }),
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(() => alert("Η αίτηση ενοικίασης στάλθηκε επιτυχώς!"))
+            .catch(error => console.error("Σφάλμα:", error));
+        }
+
+        // 🔹 Διαγραφή Ακινήτου
+        function deleteProperty(propertyId) {
+            if (confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις αυτό το ακίνητο;")) {
+                fetch(`/api/properties/${propertyId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Το ακίνητο διαγράφηκε!");
+                        location.reload();
+                    } else {
+                        alert("Σφάλμα: Δεν μπορείς να διαγράψεις αυτό το ακίνητο.");
+                    }
+                })
+                .catch(error => console.error("Σφάλμα:", error));
+            }
+        }
+
+        // 🔹 Φόρτωση Χρηστών
+        function loadUsers() {
+            fetch('/api/users/members')
+                .then(response => response.json())
+                .then(users => {
+                    const tableBody = document.getElementById("userTableBody");
+                    tableBody.innerHTML = "";  
+
+                    users.forEach(user => {
+                        let row = `<tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.role}</td>
+                            <td><button onclick="deleteUser(${user.id})">❌ Διαγραφή</button></td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+
+                    document.getElementById("userList").style.display = "block"; 
+                })
+                .catch(error => console.error("Σφάλμα φόρτωσης χρηστών:", error));
+        }
+
+        // 🔹 Διαγραφή Χρήστη
+        function deleteUser(userId) {
+            if (confirm("Θέλεις σίγουρα να διαγράψεις αυτόν τον χρήστη;")) {
+                fetch(`/api/users/${userId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Ο χρήστης διαγράφηκε!");
+                            loadUsers(); 
+                        } else {
+                            alert("Σφάλμα: Δεν μπορείς να διαγράψεις αυτόν τον χρήστη.");
+                        }
+                    })
+                    .catch(error => console.error("Σφάλμα διαγραφής χρήστη:", error));
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Καλώς ήρθες, <span th:text="${user.username}"></span>!</h1>
+    <h2>Ο ρόλος σου: <span th:text="${role}"></span></h2>
+
+    <h2>Τα διαθέσιμα ακίνητα</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Όνομα</th>
+            <th>Τοποθεσία</th>
+            <th>Τιμή</th>
+            <th>Ενέργειες</th>
+        </tr>
+        <tr th:each="property : ${properties}">
+            <td th:text="${property.id}"></td>
+            <td th:text="${property.name}"></td>
+            <td th:text="${property.location}"></td>
+            <td th:text="${property.price}"></td>
+            <td>
+                <button th:if="${role == 'TENANT'}" th:attr="onclick=|requestViewing(${property.id})|">Αίτηση Προβολής</button>
+                <button th:if="${role == 'TENANT'}" th:attr="onclick=|requestRental(${property.id})|">Αίτηση Ενοικίασης</button>
+                <button th:if="${role == 'OWNER' or role == 'ADMIN'}" th:attr="onclick=|deleteProperty(${property.id})|">❌ Διαγραφή</button>
+            </td>
+        </tr>
+    </table>
+
+    <div th:if="${role == 'ADMIN'}">
+        <h2>Διαχείριση Χρηστών</h2>
+        <button onclick="window.location.href='/create-owner'">➕ Δημιουργία Owner</button>
+        <button onclick="window.location.href='/create-tenant'">➕ Δημιουργία Tenant</button>
+        <button onclick="loadUsers()">📋 Προβολή Χρηστών</button>
+
+        <div id="userList" style="display:none;">
+            <h3>Λίστα Χρηστών</h3>
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Όνομα Χρήστη</th>
+                    <th>Ρόλος</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:if="${role == 'OWNER' or role == 'ADMIN'}">
+        <h2>Αιτήσεις Προβολής</h2>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Ακίνητο</th>
+                <th>Ενοικιαστής</th>
+                <th>Μήνυμα</th>
+                <th>Κατάσταση</th>
+                <th>Ενέργειες</th>
+            </tr>
+            <tr th:each="request : ${viewingRequests}">
+                <td th:text="${request.id}"></td>
+                <td th:text="${request.property.name}"></td>
+                <td th:text="${request.tenant.username}"></td>
+                <td th:text="${request.message}"></td>
+                <td th:text="${request.status}"></td>
+                <td>
+                    <button th:attr="onclick=|approveViewing(${request.id})|">✔ Εγκριση</button>
+                    <button th:attr="onclick=|rejectViewing(${request.id})|">❌ Απόρριψη</button>
+                </td>
+            </tr>
+        </table>
+
+        <h2>Αιτήσεις Ενοικίασης</h2>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Ακίνητο</th>
+                <th>Ενοικιαστής</th>
+                <th>Μήνυμα</th>
+                <th>Κατάσταση</th>
+                <th>Ενέργειες</th>
+            </tr>
+            <tr th:each="request : ${rentalRequests}">
+                <td th:text="${request.id}"></td>
+                <td th:text="${request.property.name}"></td>
+                <td th:text="${request.tenant.username}"></td>
+                <td th:text="${request.message}"></td>
+                <td th:text="${request.status}"></td>
+                <td>
+                    <button th:attr="onclick=|approveRental(${request.id})|">✔ Εγκριση</button>
+                    <button th:attr="onclick=|rejectRental(${request.id})|">❌ Απόρριψη</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

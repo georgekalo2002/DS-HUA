@@ -1,0 +1,24 @@
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+
+# Build directories
+target/
+out/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Application properties (αν περιέχει ευαίσθητα δεδομένα)
+application.properties
+application.yml
+
+# Maven
+.mvn/
+*.jar
+*.war
+*.ear

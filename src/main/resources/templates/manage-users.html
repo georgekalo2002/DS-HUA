@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Διαχείριση Χρηστών</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: lightgray;
+        }
+        button {
+            padding: 5px;
+            background-color: #FF4C4C;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #CC0000;
+        }
+    </style>
+    <script>
+        function deleteUser(userId) {
+            if (confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις αυτόν τον χρήστη;")) {
+                fetch(`/api/users/${userId}`, {
+                    method: "DELETE",
+                    credentials: "include"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.success);
+                        location.reload();
+                    } else {
+                        alert("Σφάλμα: " + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Σφάλμα:", error);
+                    alert("Πρόβλημα σύνδεσης με τον server!");
+                });
+            }
+        }
+
+        function loadUsers() {
+            fetch("/api/users/members", {
+                method: "GET",
+                credentials: "include"
+            })
+            .then(response => response.json())
+            .then(users => {
+                const tableBody = document.getElementById("users-table-body");
+                tableBody.innerHTML = "";
+                users.forEach(user => {
+                    const row = `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.role}</td>
+                            <td>
+                                <button onclick="deleteUser(${user.id})">❌ Διαγραφή</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Σφάλμα φόρτωσης χρηστών:", error));
+        }
+
+        document.addEventListener("DOMContentLoaded", loadUsers);
+    </script>
+</head>
+<body>
+    <h1>Διαχείριση Χρηστών</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Όνομα Χρήστη</th>
+                <th>Ρόλος</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody id="users-table-body">
+            <!-- Οι χρήστες θα φορτωθούν δυναμικά με JavaScript -->
+        </tbody>
+    </table>
+    <br>
+    <a href="/dashboard">🔙 Επιστροφή στο Dashboard</a>

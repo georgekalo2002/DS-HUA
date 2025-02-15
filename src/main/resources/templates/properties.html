@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Λίστα Ακινήτων</title>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+      fetch('/api/properties') // Κλήση στο REST API
+          .then(response => response.json())
+          .then(properties => {
+              const tableBody = document.getElementById('properties-table-body');
+              tableBody.innerHTML = ''; // Καθαρισμός παλιών δεδομένων
+              properties.forEach(property => {
+                  const row = `
+                      <tr>
+                          <td>${property.id}</td>
+                          <td>${property.name}</td>
+                          <td>${property.location}</td>
+                          <td>${property.price}</td>
+                          <td>
+                              <button onclick="deleteProperty(${property.id})">Διαγραφή</button>
+                          </td>
+                      </tr>
+                  `;
+                  tableBody.innerHTML += row;
+              });
+          })
+          .catch(error => console.error("Σφάλμα κατά τη φόρτωση των ακινήτων:", error));
+  });
+
+  function deleteProperty(id) {
+      fetch(`/api/properties/${id}`, { method: 'DELETE' })
+          .then(response => {
+              if (response.ok) {
+                  alert("Το ακίνητο διαγράφηκε!");
+                  location.reload(); // Επαναφόρτωση της σελίδας
+              }
+          })
+          .catch(error => console.error("Σφάλμα κατά τη διαγραφή του ακινήτου:", error));
+  }
+  </script>
+</head>
+<body>
+  <h1>Λίστα Ακινήτων</h1>
+  <table border="1">
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>Όνομα</th>
+              <th>Τοποθεσία</th>
+              <th>Τιμή</th>
+              <th>Ενέργειες</th>
+          </tr>
+      </thead>
+      <tbody id="properties-table-body">
+          <!-- Τα properties θα φορτωθούν δυναμικά με fetch -->
+      </tbody>
+  </table>
+
+  <a href="/create-property">Προσθήκη Νέου Ακινήτου</a>
+</body>
+</html>

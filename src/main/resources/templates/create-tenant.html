@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Δημιουργία Νέου Tenant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+        label, input {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function createTenant(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const payload = { 
+                username: username, 
+                password: password, 
+                role: "TENANT" 
+            };
+
+            console.log("🔹 JSON που στέλνεται:", JSON.stringify(payload));
+
+            fetch("/api/users/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                credentials: "include"
+            })
+            .then(response => response.json()) // 🔹 Περιμένουμε JSON, όχι text!
+            .then(data => {
+                console.log("🔹 Server Response:", data);
+
+                if (data.success) {
+                    alert(data.success);
+                    window.location.href = "/dashboard";
+                } else if (data.error) {
+                    alert("Σφάλμα: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Σφάλμα:", error);
+                alert("Πρόβλημα σύνδεσης με τον server!");
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Δημιουργία Νέου Tenant</h1>
+    <form onsubmit="createTenant(event)">
+        <label for="username">Όνομα Χρήστη:</label>
+        <input type="text" id="username" required>
+
+        <label for="password">Κωδικός:</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">Δημιουργία</button>
+    </form>
+
+    <br>
+    <a href="/dashboard">Επιστροφή</a>
+</body>
+</html>

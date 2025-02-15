@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Δημιουργία Ακινήτου</title>
+    <script>
+        function createProperty(event) {
+            event.preventDefault(); // Αποτρέπει το default submit του form
+
+            const name = document.getElementById("name").value;
+            const location = document.getElementById("location").value;
+            const price = document.getElementById("price").value;
+
+            const property = {
+                name: name,
+                location: location,
+                price: parseFloat(price)
+            };
+
+            fetch("/api/properties", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(property),
+                credentials: "include" // 🔹 Διατήρηση authentication cookies (σημαντικό!)
+            })
+            .then(response => response.json().then(data => ({status: response.status, body: data})))
+            .then(result => {
+                if (result.status === 201) {
+                    alert("Το ακίνητο δημιουργήθηκε!");
+                    window.location.href = "/properties"; // Μεταφορά στη λίστα ακινήτων
+                } else if (result.status === 401) {
+                    alert("Δεν είστε συνδεδεμένος! Παρακαλώ συνδεθείτε.");
+                    window.location.href = "/login"; // Ανακατεύθυνση στη σελίδα σύνδεσης
+                } else {
+                    alert("Σφάλμα κατά τη δημιουργία του ακινήτου: " + JSON.stringify(result.body));
+                }
+            })
+            .catch(error => console.error("Σφάλμα:", error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Δημιουργία Ακινήτου</h1>
+    <form onsubmit="createProperty(event)">
+        <label for="name">Όνομα:</label>
+        <input type="text" id="name" required><br>
+
+        <label for="location">Τοποθεσία:</label>
+        <input type="text" id="location" required><br>
+
+        <label for="price">Τιμή:</label>
+        <input type="number" id="price" required><br>
+
+        <button type="submit">Δημιουργία</button>
+    </form>
+
+    <a href="/properties">Επιστροφή στη Λίστα Ακινήτων</a>
+</body>
+</html>

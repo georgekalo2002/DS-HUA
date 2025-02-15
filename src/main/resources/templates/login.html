@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Σύνδεση</h2>
+
+    <form action="/login" method="post">
+        <label for="username">Όνομα χρήστη:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+
+        <label for="password">Κωδικός:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+
+        <button type="submit">Σύνδεση</button>
+    </form>
+
+    <div th:if="${param.error}">
+        <p style="color:red;">Λάθος στοιχεία σύνδεσης!</p>
+    </div>
+
+    <div th:if="${param.logout}">
+        <p style="color:green;">Έγινε αποσύνδεση με επιτυχία.</p>
+    </div>
+</body>
+</html>
